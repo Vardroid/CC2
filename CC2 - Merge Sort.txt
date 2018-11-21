@@ -1,0 +1,111 @@
+package Merge;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
+
+public class MergeSort {
+
+	public static void main(String[] args) {
+		//INPUT FOR 1-100
+		int array1[] = new int[100];
+		for(int i = 0; i < array1.length; i++){
+			array1[i] = i+1;
+		}
+		System.out.println("INPUT 1-100:\n"+Arrays.toString(array1)+"\n");
+		mergeSort(array1, 0, array1.length-1);
+		System.out.println("OUTPUT:\n"+Arrays.toString(array1)+"\n===========\n");
+		
+		//INPUT FOR 100-1
+		int array2[] = new int[100];
+		int val = 100;
+		for(int i = 0; i < array2.length; i++){
+			array2[i] = val;
+			val--;
+		}
+		System.out.println("INPUT 100-1:\n"+Arrays.toString(array2)+"\n");
+		mergeSort(array2, 0, array2.length-1);
+		System.out.println("OUTPUT:\n"+Arrays.toString(array2)+"\n===========\n");
+		
+		//INPUT FOR 1-100 RANDOM
+		int array3[] = new int[100];
+		for(int i = 1; i <= array3.length; i++){
+			array3[i-1] = i;
+		}
+		shuffleArray(array3);
+		System.out.println("INPUT RANDOM:\n"+Arrays.toString(array3)+"\n");
+		mergeSort(array3, 0, array3.length-1);
+		System.out.println("OUTPUT:\n"+Arrays.toString(array3)+"\n===========\n");
+	}
+	
+	static void bubbleSort(int numbers[]){
+		for(int i = 0; i < numbers.length; i++){ 
+			for(int j = 0; j < numbers.length - i - 1; j++){
+				if(numbers[j] > numbers[j+1]){
+					int temp = 0;
+					temp = numbers[j];
+					numbers[j] = numbers[j+1];
+					numbers[j+1] = temp;
+				}
+			}
+		}
+	}
+	
+	static void mergeSort(int numbers[], int f, int l){
+		if(f < l){
+			int middle = (f+l)/2;
+			
+			//divide the array 
+			mergeSort(numbers, f, middle);
+			mergeSort(numbers, middle+1, l);
+			
+			//merge and sort the divided arrays
+			merge(numbers, f, middle, l);
+		}
+	}
+	
+	static void merge(int numbers[], int f, int m, int l){ //f = first, m = middle, l = last
+		//lengths of the 2 sides
+		int ar1 = m - f + 1;
+		int ar2 = l - m;
+		//create temporary arrays for the 2 sides
+		int left[] = new int[ar1];
+		int right[] = new int[ar2];
+		//put the values from the original array to the temporary array
+		for(int i = 0; i < ar1; i++){ 
+			left[i] = numbers[f+i];
+		}
+		for(int i = 0; i < ar2; i++){
+			right[i] = numbers[(m+1)+i];
+		}
+		//starting indexes of the left and right array
+		int iL = 0, iR = 0;
+		for(int i = 0; i < (ar1+ar2); i++){
+			//check if a side is finished 
+			if(iL == left.length){
+				numbers[f+i] = right[iR]; 
+				iR++;
+			}else if(iR == right.length){
+				numbers[f+i] = left[iL];
+				iL++;
+			}else{
+				//look for the smaller number
+				if(left[iL] < right[iR]){
+					numbers[f+i] = left[iL];//put it to the original array
+					iL++;
+				}else{
+					numbers[f+i] = right[iR];
+					iR++;
+				}
+			}
+		}
+	}
+	static void shuffleArray(int[] ar){
+		Random rnd = ThreadLocalRandom.current();
+		for (int i = ar.length - 1; i > 0; i--){
+		  int index = rnd.nextInt(i + 1);
+		  int a = ar[index];
+		  ar[index] = ar[i];
+		  ar[i] = a;
+		}
+	}
+}

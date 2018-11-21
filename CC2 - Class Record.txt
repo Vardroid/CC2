@@ -1,0 +1,271 @@
+package finals;
+
+import java.util.Scanner;
+
+public class Main {
+    public static int nS = 2;
+
+    //initialization of the students information (inputs)
+    public static String[] idNumber = new String[nS];
+    public static String[] firstName = new String[nS];
+    public static String[] lastName = new String[nS];
+    public static String[] middleInitial = new String[nS];
+    public static float[] midtermCS = new float[nS]; 
+    public static float[] midtermLab = new float[nS];
+    public static float[] midtermExam = new float[nS];
+    public static float[] finalCS = new float[nS];
+    public static float[] finalLab = new float[nS];
+    public static float[] finalExam = new float[nS];
+
+    public static int[] FmidtermGrade = new int[nS]; //midterm grade
+    public static int[] FfinalGrade = new int[nS]; //finals grade (without midterm)
+   
+    public static float[] midtermGrade = new float[nS]; //raw midterm grade
+    public static float[] finalGrade = new float[nS]; //raw finals grade
+    public static int[] grade = new int[nS]; //finals grade (with midterm)
+    
+    public static String[] remark = new String[nS];
+    
+    //Longest name
+    //To be used for length of column in display
+    static int lengthLN = 9; //Last Name = 9 chars
+    static int lengthN = 4; //Name = 4 chars
+    
+    static void pDash(int x){
+    	for(int i = 0; i < x; i++){
+    		System.out.print("-");
+    	}
+    }
+    static void pTopBot(){
+    	System.out.print("|-------------|-");
+        pDash(lengthLN);
+        System.out.print("-|-");
+        pDash(lengthN);
+        System.out.println("-|----|-----|-----|---------|");
+    }
+    
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        for(int i = 0; i < nS; i++){ //loops through the students for their input
+            System.out.println("STUDENT "+(i+1));
+            System.out.print("ID Number: ");
+            idNumber[i] = sc.nextLine();
+            System.out.print("First Name: ");
+            firstName[i] = sc.nextLine();
+            if(firstName[i].length() > lengthN){
+            	lengthN = firstName[i].length();
+            }
+            System.out.print("Last Name: ");
+            lastName[i] = sc.nextLine();
+            if(lastName[i].length() > lengthLN){
+            	lengthLN = lastName[i].length();
+            }
+            System.out.print("Middle Initial: ");
+            middleInitial[i] = sc.nextLine();
+            //no score should be less than 0 or greater than 100
+            boolean input = true;
+            do{
+                System.out.print("Midterm Class Standing Score: ");
+                midtermCS[i] = sc.nextFloat();
+                if(midtermCS[i] > 100 || midtermCS[i] < 0){
+                    System.err.println("Invalid input. Try again.");
+                    input = false;
+                }else{
+                    break;
+                }
+            }while(input == false);
+            
+            input = true;
+            do{
+                System.out.print("Midterm Laboratory Score: ");
+                midtermLab[i] = sc.nextFloat();
+                if(midtermLab[i] > 100 || midtermLab[i] < 0){
+                    System.err.println("Invalid input. Try again.");
+                    input = false;
+                }else{
+                    break;
+                }
+            }while(input == false);
+            
+            input = true;
+            do{
+                System.out.print("Midterm Exam Score: ");
+                midtermExam[i] = sc.nextFloat();
+                if(midtermExam[i] > 100 || midtermExam[i] < 0){
+                    System.err.println("Invalid input. Try again.");
+                    input = false;
+                }else{
+                    break;
+                }
+            }while(input == false);
+      
+            input = true;
+            do{
+                System.out.print("Final Class Standing Score: ");
+                finalCS[i] = sc.nextFloat();
+                if(finalCS[i] > 100 || finalCS[i] < 0){
+                    System.err.println("Invalid input. Try again.");
+                    input = false;
+                }else{
+                    break;
+                }
+            }while(input == false);
+            
+            input = true;
+            do{
+                System.out.print("Final Laboratory Score: ");
+                finalLab[i] = sc.nextFloat();
+                if(finalLab[i] > 100 || finalLab[i] < 0){
+                    System.err.println("Invalid input. Try again.");
+                    input = false;
+                }else{
+                    break;
+                }
+            }while(input == false);
+            
+            input = true;
+            do{
+                System.out.print("Final Exam Score: ");
+                finalExam[i] = sc.nextFloat();
+                if(finalExam[i] > 100 || finalExam[i] < 0){
+                    System.err.println("Invalid input. Try again.");
+                    input = false;
+                }else{
+                    break;
+                }
+            }while(input == false);
+            sc.nextLine();
+            System.out.println();
+        }
+        
+        //solve the grades of every student
+        for(int i = 0; i < nS; i++){
+           //raw Midterm Grade
+	       midtermGrade[i] = (float) ((midtermCS[i]*0.33)+(midtermLab[i]*0.33)+(midtermExam[i]*0.34));
+	       //raw Finals Grade
+	       finalGrade[i] = (float) ((finalCS[i]*0.33)+(finalLab[i]*0.33)+(finalExam[i]*0.34));
+	       
+	       //converted Midterm Grade
+	       FmidtermGrade[i] = convert(midtermGrade[i]);
+	       //converted Finals Grade
+	       FfinalGrade[i] = convert(finalGrade[i]);
+	       
+	       //FINAL GRADE - 50% of converted Midterm and Finals Grade
+	       grade[i] = (int) Math.round((FmidtermGrade[i]/2.0)+(FfinalGrade[i]/2.0));
+	       
+	       //Check if student passed or failed
+	       if(grade[i] >= 75){
+	           remark[i] = "PASSED";
+	       }else{
+	           remark[i] = "FAILED";
+	       }
+        }
+        pTopBot();
+        System.out.printf("| %11s | %"+lengthLN+"s | %"+lengthN+"s | %2s | %3s | %3s | %7s |%n", "ID Number","Last Name", "Name", "MI", "Mid", "Fin", "Remarks");
+        pTopBot();
+        
+        for(int i = 0; i < nS; i++){
+            System.out.printf("| %11s | %"+lengthLN+"s | %"+lengthN+"s | %2s | %3s | %3s | %7s |%n", idNumber[i], lastName[i], firstName[i], middleInitial[i], FmidtermGrade[i], grade[i], remark[i]);
+        }
+        pTopBot();
+        System.out.println();
+        
+        String ans;
+        boolean valid;
+        do{
+            valid = false;
+            ans = "";
+            System.out.print("Enter ID Number of Student: ");
+            String id = sc.nextLine();
+            for(int i = 0; i < nS; i++){
+                if(idNumber[i].equals(id)){
+                    printStud(i);
+                    valid = true;
+                    break;
+                }
+            }
+            if(valid == false){
+                System.err.println("ID Number not found!");
+                ans = "y";
+                continue;
+            }
+            System.out.print("Check again? [y/n]:");
+            ans = sc.nextLine();
+        }while(ans.toLowerCase().equals("y"));
+        sc.close();
+    }
+    static void printStud(int id){
+        System.out.printf("%nName of Student: %s %s. %s%n",firstName[id], middleInitial[id], lastName[id]);
+        System.out.println("Raw Midterm Grade: "+midtermGrade[id]);
+        System.out.println("Raw Finals Grade: "+finalGrade[id]);
+        System.out.println("Midterm Grade: "+FmidtermGrade[id]);
+        System.out.println("Finals Grade: "+grade[id]);
+        System.out.println();
+    }
+    
+    static int convert(double g){
+        int grade = 1;
+        if(g < 7 && g >= 0){
+            grade = 70;
+        }else if(g < 19){
+            grade = 71;
+        }else if(g < 31){
+            grade = 72;
+        }else if(g < 43){
+            grade = 73;
+        }else if(g < 50){
+            grade = 74;
+        }else if(g < 51.5){
+            grade = 75;
+        }else if(g < 53){
+            grade = 76;
+        }else if(g < 55){
+            grade = 77;
+        }else if(g < 57){
+            grade = 78;
+        }else if(g < 59){
+            grade = 79;
+        }else if(g < 61){
+            grade = 80;
+        }else if(g < 63){
+            grade = 81;
+        }else if(g < 65){
+            grade = 82;
+        }else if(g < 67){
+            grade = 83;
+        }else if(g < 69){
+            grade = 84;
+        }else if(g < 71){
+            grade = 85;
+        }else if(g < 73){
+            grade = 86;
+        }else if(g < 75){
+            grade = 87;
+        }else if(g < 77){
+            grade = 88;
+        }else if(g < 79){
+            grade = 89;
+        }else if(g < 81){
+            grade = 90;
+        }else if(g < 83){
+            grade = 91;
+        }else if(g < 85){
+            grade = 92;
+        }else if(g < 87){
+            grade = 93;
+        }else if(g < 89){
+            grade = 94;
+        }else if(g < 91){
+            grade = 95;
+        }else if(g < 93){
+            grade = 96;
+        }else if(g < 95){
+            grade = 97;
+        }else if(g < 97){
+            grade = 98;
+        }else{
+            grade = 99;
+        }
+        return grade;
+    }
+}
